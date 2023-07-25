@@ -20,9 +20,11 @@ def cos_approx(x, accuracy=10):
         with the given accuracy.
     """
 
+
     # He defined the function separetely to calculate the approximation
 
     return sum([(-1)**n/factorial(2*n)*x**(2*n) for n in range(accuracy+1)])
+
 
 
 
