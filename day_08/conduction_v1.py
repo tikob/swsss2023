@@ -16,7 +16,7 @@ if __name__ == "__main__":
     x = np.arange(-dx, 10 + 2 * dx, dx)
 
     t_lower = 200.0
-    t_upper = 1000.0
+    t_upper = 1500.0
 
     nPts = len(x)
 
@@ -26,6 +26,15 @@ if __name__ == "__main__":
     c = np.zeros(nPts) - 1
     d = np.zeros(nPts)
 
+    # Add a source term:
+    lam = 10.
+    dz = x[1]-x[0]
+    dz2 = dz*dz
+
+    q = np.zeros(nPts)
+    q[(x>2)&(x<8)] = 100.
+    d = q*dz2/lam
+
     # boundary conditions (bottom - fixed):
     a[0] = 0
     b[0] = 1
@@ -33,13 +42,14 @@ if __name__ == "__main__":
     d[0] = t_lower
 
     # top - fixed:
-    a[-1] = 0
-    b[-1] = 1
+    a[-1] = 1
+    b[-1] = -1
     c[-1] = 0
-    d[-1] = t_upper
+    d[-1] = 0#t_upper
 
-    # Add a source term:
-    
+
+
+
     # solve for Temperature:
     t = solve_tridiagonal(a, b, c, d)
 
@@ -48,11 +58,11 @@ if __name__ == "__main__":
     ax = fig.add_subplot(111)
 
     ax.plot(x, t)
+    ax.set_xlabel("x")
+    ax.set_ylabel("Temperature")
 
     plotfile = 'conduction_v1.png'
-    print('writing : ',plotfile)    
-    fig.savefig(plotfile)
-    plt.close()
-    
-    
-    
+    print('writing : ',plotfile)
+    plt.show()
+    # fig.savefig(plotfile)
+    # plt.close()
