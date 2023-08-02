@@ -5,22 +5,30 @@ import time
 import toy_reactor as model
 
 def explicit_euler_step(f,x,t,h):
-    return ... # please complete this function
+    return x+h*f(x,t)
 
-def implicit_euler_step(f,x,t,h):    
-    return ... # please complete this function
+# def func(x_new):
+#     func(x_new) = x+h*f(x_new, t+h) - x_new
+def implicit_euler_step(f,x,t,h):
+    func = lambda x_new : x+h*f(x_new, t+h) - x_new
+    x_new = fsolve(func, x)
+    return x_new # please complete this function
 
 def crank_nicolson_step(f,x,t,h):
-    return ... # please complete this function
+    func = lambda x_new: x+h/2*(f(x,t)+f(x_new, t+h)) - x_new
+    x_new = fsolve(func,x)
+    return x_new # please complete this function
 
 def heun_step(f,x,t,h):
-    return ... # please complete this function
+    y = x + h*f(x,t)
+    return x+h/2*(f(x,t)+f(y,t+h)) # please complete this function
 
 
-# after implementing a time stepper, 
+# after implementing a time stepper,
 # add them to this list.
 # Then, run the script and check if the figures are as expected!
-integrators = []
+integrators = [explicit_euler_step, implicit_euler_step, crank_nicolson_step, heun_step]
+# integrators = [explicit_euler_step]
 
 ####################################
 ### no modification needed beyond this point
@@ -38,7 +46,7 @@ def integrate(f, x_0, tspan, h, step):
         ts.append(t)
     return trajectory, ts
 
-# stoichiometry matrix 
+# stoichiometry matrix
 S = np.array([[-1, 0, 0],
               [1, -1, 1],
               [0, 2, -2]])
@@ -54,7 +62,7 @@ h_range = 10**np.linspace(-4,1,6)
 #################################
 ## no need to edit the code below
 ## this just evaluates the problem
-## and makes some interesting plots 
+## and makes some interesting plots
 #################################
 performance = dict()
 for h in h_range:
@@ -63,8 +71,8 @@ for h in h_range:
         sol = integrate(lambda x,t : model.reactor(x,t,k,S), x_0, (0.0,10.0), h, integrator)
         tf = time.time()
         performance[h, integrator, "CPU_time"] = tf-t0
-        performance[h, integrator, "sol"] = sol 
-   
+        performance[h, integrator, "sol"] = sol
+
 # compare stability and computational performance
 def plot_traces(ax, t_range, sol):
     colors = ["red", "dodgerblue", "black"]
@@ -74,7 +82,7 @@ def plot_traces(ax, t_range, sol):
     ax.set_xlabel("t")
     ax.set_ylabel("c(t)")
     plt.tight_layout()
-        
+
 integrator2name = {crank_nicolson_step : "Crank-Nicolson",
                    explicit_euler_step : "Explicit Euler",
                    implicit_euler_step : "Implicit Euler",
@@ -93,7 +101,7 @@ for integrator in integrators:
             h = h_range[i*2+j]
             sol, ts = performance[h, integrator, "sol"]
             axs[i,j].set_title("h = "+str(h))
-            plot_traces(axs[i,j], ts, sol)   
+            plot_traces(axs[i,j], ts, sol)
     fig.show()
     fig.savefig(integrator2name[integrator]+"_traces.pdf")
 
@@ -118,5 +126,3 @@ axs[0].legend(loc = 'lower right')
 plt.tight_layout()
 fig.savefig("integrator_performance.pdf")
 fig.show()
-
-

@@ -1,5 +1,5 @@
 # numpy for fast arrays and some linear algebra.
-import numpy as np 
+import numpy as np
 # import matplotlib for plotting
 import matplotlib.pyplot as plt
 # import Dormand-Prince Butcher tableau
@@ -7,17 +7,17 @@ import dormand_prince as dp
 # import our Runge-Kutta integrators
 import runge_kutta as rk
 # import time to measure performance
-import time 
+import time
 
 # define adaptive Dormand-Prince stepper
 def adaptive_dormand_prince_stepper(f,x,t,h):
-    return ... # please complete this function 
+    return rk.adaptive_explicit_RK_stepper(f, x, t,h,dp.a, dp.b, dp.c, dp.b_control) # please complete this function
                # using rk.adaptive_explicit_RK_stepper
 
 def reaction_rates(c,k):
     """
         Function implementing the reaction rate computation of our toy reactor
-        
+
         inputs:
             c - concentration of species A, B, C (numpy array)
             k - rate constants (organized as list)
@@ -29,15 +29,15 @@ def reaction_rates(c,k):
 
 def reactor(c,t,k,S):
     """
-        Function returing the rhs of our toy reactor model 
-        
+        Function returing the rhs of our toy reactor model
+
         inputs:
             c - concentration of species  (numpy array)
-            t - time 
+            t - time
             k - rate constants (organized as list)
             S - stoichiometry matrix (numpy array)
 
-        outputs: 
+        outputs:
             dc/dt - numpy array
     """
     return S @ reaction_rates(c,k)
@@ -55,7 +55,7 @@ c_0 = np.array([1.0, 0, 0])
 
 # time horizon
 tspan = (0.0,5.0)
-# time step 
+# time step
 h = 1e-4
 
 # define Dormand-Prince time stepper
@@ -68,17 +68,17 @@ def dormand_prince_stepper(f,x,t,h):
 
 # compare performance
 t_begin = time.time()
-trajectory, time_points = rk.integrate(lambda c, t: reactor(c, t, k, S), 
-                                       c_0, 
-                                       tspan, 
+trajectory, time_points = rk.integrate(lambda c, t: reactor(c, t, k, S),
+                                       c_0,
+                                       tspan,
                                        h,
                                        dormand_prince_stepper)
 print("Fixed time step Dormand-Prince method executed in "+str(time.time() - t_begin)+" seconds.")
 
 t_begin = time.time()
-trajectory, time_points = rk.adaptive_integrate(lambda c, t: reactor(c, t, k, S), 
-                                                c_0, 
-                                                tspan, 
+trajectory, time_points = rk.adaptive_integrate(lambda c, t: reactor(c, t, k, S),
+                                                c_0,
+                                                tspan,
                                                 h,
                                                 adaptive_dormand_prince_stepper)
 print("Adaptive Dormand-Prince method executed in "+str(time.time() - t_begin)+" seconds.")
@@ -87,17 +87,17 @@ print("Adaptive Dormand-Prince method executed in "+str(time.time() - t_begin)+"
 
 # compare trajectories
 tspan = (0.0,0.2)
-adaptive_trajectory, adaptive_time_points = rk.adaptive_integrate(lambda c, t: reactor(c, t, k, S), 
-                                                                  c_0, 
-                                                                  tspan, 
+adaptive_trajectory, adaptive_time_points = rk.adaptive_integrate(lambda c, t: reactor(c, t, k, S),
+                                                                  c_0,
+                                                                  tspan,
                                                                   h,
                                                                   adaptive_dormand_prince_stepper)
 
-fixed_trajectory, fixed_time_points = rk.integrate(lambda c, t: reactor(c, t, k, S), 
-                                                          c_0, 
-                                                          tspan, 
+fixed_trajectory, fixed_time_points = rk.integrate(lambda c, t: reactor(c, t, k, S),
+                                                          c_0,
+                                                          tspan,
                                                           h,
-                                                          dormand_prince_stepper)                                               
+                                                          dormand_prince_stepper)
 species_names = ["A", "B", "C"]
 colors = ["red", "blue", "black"]
 
@@ -107,9 +107,9 @@ ax.set_xlabel("time")
 ax.set_ylabel("concentration")
 for i in range(3):
     ax.plot(fixed_time_points, [c[i] for c in fixed_trajectory],
-            color = colors[i], 
+            color = colors[i],
             marker = "o",
-            linewidth = 2, 
+            linewidth = 2,
             label = species_names[i])
 
 ax = axs[1]
@@ -117,9 +117,10 @@ ax.set_xlabel("time")
 ax.set_ylabel("concentration")
 for i in range(3):
     ax.plot(adaptive_time_points, [c[i] for c in adaptive_trajectory],
-            color = colors[i], 
+            color = colors[i],
             marker = "o",
-            linewidth = 2, 
+            linewidth = 2,
             label = species_names[i])
-fig.savefig("adaptive_vs_fixed.pdf")
 
+plt.show()
+# fig.savefig("adaptive_vs_fixed.pdf")

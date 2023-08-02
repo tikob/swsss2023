@@ -142,30 +142,56 @@ if __name__ == "__main__":
     ax1 = fig.add_subplot(311)
     ax2 = fig.add_subplot(312)
     ax3 = fig.add_subplot(313)
+    fig, (ax4,ax5) = plt.subplots(2, figsize = (10,10))
 
     # define dx:
-    dx = np.pi / 4
+    nPts = np.array([10*2**i for i in range(0, 8)])
+    print (nPts)
+    error_arr = []
+    for n in nPts:
+        # dx = np.pi/4
+        x = np.linspace(-2.0 * np.pi, 2.0 * np.pi, n)
+        dx = x[0]-x[1]
+        f, a_dfdx, a_d2fdx2 = analytic(x)
+        n_dfdx = first_derivative(f, x)
+        n_d2fdx2 = second_derivative(f, x)
+        error = np.sum(np.abs(n_dfdx - a_dfdx)) / len(n_dfdx)
+        error_arr.append(error)
+
+
+    ax4.plot(nPts, error_arr)
+    # ax4.set_yscale('log')
+    # ax4.set_xscale('log')
+    ax4.set_xlabel("Number of Points")
+    ax4.set_ylabel("Error Values")
+    ax5.plot(np.log(nPts), np.log(error_arr))
+    # ax5.set_yscale('log')
+    # ax5.set_xscale('log')
+    ax5.set_xlabel("Number of Points")
+    ax5.set_ylabel("Error Values")
+    ax5.set_title("Log-Log plot")
+    fig.savefig('errors.png')
 
     # arange doesn't include last point, so add explicitely:
-    x = np.arange(-2.0 * np.pi, 2.0 * np.pi + dx, dx)
+
 
     # get analytic solutions:
-    f, a_dfdx, a_d2fdx2 = analytic(x)
 
-    function, integral_function = integral_analytic(x)
 
-    numerical_integral_f = numerical_integration(function, x)
+    # function, integral_function = integral_analytic(x)
 
-    print ("analytical integral ", integral_function, "numerical integral: ", numerical_integral_f)
+    # numerical_integral_f = numerical_integration(function, x)
 
-    # get numeric first derivative:
-    n_dfdx = first_derivative(f, x)
+    # print ("analytical integral ", integral_function, "numerical integral: ", numerical_integral_f)
 
     # get numeric first derivative:
-    n_d2fdx2 = second_derivative(f, x)
 
 
-    n_d2fdx2_num = first_derivative(n_dfdx, x)
+    # get numeric first derivative:
+
+
+
+    # n_d2fdx2_num = first_derivative(n_dfdx, x)
     # plot:
 
     ax1.plot(x, f, label = "f(x) = $x^2cos(x)+xe^x$")
@@ -173,7 +199,7 @@ if __name__ == "__main__":
     # ax1.set_yscale('log')
 
     # plot first derivatives:
-    error = np.sum(np.abs(n_dfdx - a_dfdx)) / len(n_dfdx)
+
     sError = ' (Err: %5.1f)' % error
     ax2.plot(x, a_dfdx, color = 'black', label = 'Analytic')
     ax2.plot(x, n_dfdx, color = 'red', label = 'Numeric'+ sError)
@@ -184,18 +210,18 @@ if __name__ == "__main__":
     # plot second derivatives:
     error2 = np.sum(np.abs(n_d2fdx2 - a_d2fdx2)) / len(n_d2fdx2)
     sError2 = ' (Err: %5.1f)' % error2
-    error3 = np.sum(np.abs(n_d2fdx2_num - a_d2fdx2)) / len(n_d2fdx2_num)
-    sError3 = ' (Err: %5.1f)' % error3
+    # error3 = np.sum(np.abs(n_d2fdx2_num - a_d2fdx2)) / len(n_d2fdx2_num)
+    # sError3 = ' (Err: %5.1f)' % error3
     ax3.plot(x, a_d2fdx2, color = 'black', label = 'Analytic')
     ax3.plot(x, n_d2fdx2, color = 'red', label = 'Numeric'+ sError2)
-    ax3.plot(x, n_d2fdx2_num, color = 'blue', label = '2 times first derivative'+sError3)
+    # ax3.plot(x, n_d2fdx2_num, color = 'blue', label = '2 times first derivative'+sError3)
     ax3.scatter(x, n_d2fdx2, color = 'red')
-    ax3.scatter(x, n_d2fdx2_num, color = 'blue')
+    # ax3.scatter(x, n_d2fdx2_num, color = 'blue')
     # ax3.set_yscale('log')
     ax3.legend()
 
     plotfile = 'plot.png'
     print('writing : ',plotfile)
-    # plt.show()
+    plt.show()
     # fig.savefig(plotfile)
     # plt.close()
