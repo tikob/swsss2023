@@ -21,7 +21,7 @@ if __name__ == "__main__":
     t_upper = 1500.0
 
     nPts = len(x)
-    nDays = 3
+    nDays = 12
     dt = 0.5
     times = np.arange(0, nDays*24.0, dt)
 
