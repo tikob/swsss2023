@@ -34,8 +34,18 @@ def plot_density(ax,times, alt, density, m, n_0, species):
     return ax
 
 
-# def generate_species_dict():
-#     dict = {'n2': [m_n2, n_n2]}
+def generate_species_dict():
+    m_n2 = 28*1.67e-27
+
+    n_n2 = 1.e19
+
+    m_o2 = 32*1.67e-27
+    n_o2 = 0.3e19
+    m_o = 16*1.67e-27
+    n_o = 1.e18
+    dict = {'n2': [m_n2, n_n2], 'o2':[m_o2, n_o2], 'o': [m_o, n_o]}
+
+    return dict
 
 
 if __name__ == "__main__":
@@ -63,7 +73,6 @@ if __name__ == "__main__":
     lon = 44.8015
 
     m_N2 = 28*1.67e-27
-
     n_0_N2 = 1.e19
     r_earth = 6370e3
     k_boltz = 1.38e-23
@@ -115,9 +124,11 @@ if __name__ == "__main__":
 
         # solve for Temperature:
         t = solve_tridiagonal(a, b, c, d)
-        density_n2 = generate_density_from_temperature.generate_gensity_from_temp(m_N2, n_0_N2, t, alt, nPts)
-        density_o2 = generate_density_from_temperature.generate_gensity_from_temp(m_o2, n_0_o2, t, alt, nPts)
-        density_o = generate_density_from_temperature.generate_gensity_from_temp(m_o, n_0_o, t, alt, nPts)
+        species = generate_species_dict()
+        print ('n2',species['n2'][0])
+        density_n2 = generate_density_from_temperature.generate_gensity_from_temp(species['n2'], t, alt, nPts)
+        density_o2 = generate_density_from_temperature.generate_gensity_from_temp(species['o2'], t, alt, nPts)
+        density_o = generate_density_from_temperature.generate_gensity_from_temp(species['o'], t, alt, nPts)
 
         temperatures[counter]=t
         n2_densities[counter] = density_n2

@@ -58,10 +58,11 @@ def generate_density_profile(m, n_0, T_0, alt_array, nPts):
     return density_array
 
 
-def generate_gensity_from_temp(m, n_0, temperature_array, alt_array, nPts):
+def generate_gensity_from_temp(species, temperature_array, alt_array, nPts):
+    m_0, n_0 = species
     k_boltz = 1.38e-23
     g_array = generate_g_array(alt_array+6370e3, nPts)
-    H_array = generate_H_array(k_boltz,m,temperature_array, g_array, nPts)
+    H_array = generate_H_array(k_boltz,m_0,temperature_array, g_array, nPts)
     density_array = generate_n(n_0,temperature_array[0], temperature_array, alt_array, H_array, nPts)
 
     return density_array
