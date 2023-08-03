@@ -25,11 +25,11 @@ function dTdt(T, p, t)
 
     dT = zeros(length(T))
 
-    dT[1] = # here you need to add the finite difference approximation for the 1st grid point
+    dT[1] = λ/Δx^2*(T[2]-2*T[1]+Tlower)+Qeuv[1] # here you need to add the finite difference approximation for the 1st grid point
     for i in 2:length(T)-1
-        dT[i] = # here you need to add the finite difference approximation for the ith grid point
+        dT[i] = λ/Δx^2 * (T[i+1] - 2*T[i]+T[i-1]) + Qeuv[i] # here you need to add the finite difference approximation for the ith grid point
     end
-    dT[N] = # here you need to add the finite difference approximation for the ith grid point
+    dT[N] = λ/Δx^2*(-T[N]+T[N-1]) + Qeuv[N]# here you need to add the finite difference approximation for the ith grid point
 
     return dT
 end
