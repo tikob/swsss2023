@@ -58,7 +58,7 @@ function generate_movie(sol, steps = 1000)
     T_profile = CM.Observable(sol(0.0))
     CM.lines!(ax, x_range, T_profile, color = :black, linewidth = 2)
     
-    CM.record(fig, string(@__DIR__, "/movie.mp4"), t_range, framerate=80) do t
+    CM.record(fig, string(@__DIR__, "/movie_new.mp4"), t_range, framerate=80) do t
         T_profile[] = sol(t)
     end 
 end

@@ -24,6 +24,7 @@ four_way_philip = [head                    reverse(head, dims = 2);
 
 # Compression
 rand_img = load("random_pic_1.jpeg")
+# Similar Value Decomptession
 U, Σ, V = svd(rand_img)
 img_chain = Gray.(U[:,1]*Diagonal(Σ[1:1])*V[:,1]')
 for N in 11:10:51
